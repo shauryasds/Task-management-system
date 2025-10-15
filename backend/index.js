@@ -12,7 +12,25 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+// ✅ Configure CORS
+const allowedOrigins = [
+  'https://task-management-system-frontend-amber.vercel.app',
+  
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('CORS policy violation'));
+    }
+  },
+  credentials: true,
+}));
+
 
 // Routes
 app.use('/api/tasks', taskRoutes);
